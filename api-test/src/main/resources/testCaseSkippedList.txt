@@ -21,3 +21,4 @@ INJICERT-878------InjiCertify_GetCredentialForLandRegistry_IdpAccessToken_2.0_Ed
 INJICERT-878------InjiCertify_GetCredentialForLandRegistry_IdpAccessToken_2.0_ES256_Did_Key_Sign_invalid
 INJICERT-878------InjiCertify_UpdateCredentialStatus_ForLandRegistry_Revocation_invalid_statuspurpose_Neg
 INJICERT-878------InjiCertify_UpdateCredentialStatus_ForLandRegistry_Revocation_without_statuspurpose_Neg
+F-CERT-5------OIDF_certify_oid4vci-1_0-issuer-metadata-test

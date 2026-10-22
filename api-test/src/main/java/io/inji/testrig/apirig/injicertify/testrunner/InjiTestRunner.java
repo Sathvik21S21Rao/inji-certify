@@ -79,6 +79,10 @@ public class InjiTestRunner {
 			}
 			AdminTestUtil.init();
 			InjiCertifyConfigManager.init();
+			if ("yes".equalsIgnoreCase(InjiCertifyConfigManager.getproperty("conformance.enabled").trim())) {
+				startConformanceRunner();
+				System.exit(0);
+			}
 			suiteSetup(getRunType());
 			BaseTestCase.initializePMSDetails();
 			SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
@@ -257,6 +261,41 @@ public class InjiTestRunner {
 			LOGGER.error("No files found in directory: " + homeDir);
 		}
 
+	}
+
+	/**
+	 * OpenID conformance mode (ADR-005): runs only injicertifyConformanceSuite.xml.
+	 */
+	public static void startConformanceRunner() {
+		BaseTestCase.initialize();
+		BaseTestCase.currentModule = BaseTestCase.runContext + GlobalConstants.INJICERTIFY;
+		SkipTestCaseHandler.loadTestcaseToBeSkippedList("testCaseSkippedList.txt");
+		BaseTestCase.setReportName(GlobalConstants.INJICERTIFY + "-conformance-"
+				+ io.inji.testrig.apirig.injicertify.testscripts.OpenIDConformanceTest.configName());
+		File homeDir = null;
+		String os = System.getProperty("os.name");
+		if (getRunType().contains("IDE") || os.toLowerCase().contains("windows")) {
+			homeDir = new File(System.getProperty("user.dir") + "/testNgXmlFiles");
+		} else {
+			File dir = new File(System.getProperty("user.dir"));
+			homeDir = new File(dir.getParent() + "/inji/testNgXmlFiles");
+		}
+		File[] files = homeDir.listFiles();
+		if (files == null) {
+			LOGGER.error("No files found in directory: " + homeDir);
+			return;
+		}
+		for (File file : files) {
+			if (file.getName().toLowerCase().contains("conformancesuite")) {
+				TestNG runner = new TestNG();
+				List<String> suitefiles = new ArrayList<>();
+				suitefiles.add(file.getAbsolutePath());
+				runner.setTestSuites(suitefiles);
+				System.getProperties().setProperty("testng.outpur.dir", "testng-report");
+				runner.setOutputDirectory("testng-report");
+				runner.run();
+			}
+		}
 	}
 
 	/**
